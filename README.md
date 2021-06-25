@@ -13,13 +13,13 @@ Request Body :
 }
 Response Body : 
 {
-    "shortUrl": "P"
+    "shortUrl": "https://yt.be/P7CG"
 }
 
 **Long Redirect URL API  
 **
 
-Endpoint : http://localhost:8080/api/v1/{shortUrl}
+Endpoint : hhttp://localhost:8080/api/v1/long-url?shortUrl=https://yt.be/P7CG
 Method : GET
 
 Response : {
