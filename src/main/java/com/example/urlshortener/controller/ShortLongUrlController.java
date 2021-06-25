@@ -36,8 +36,8 @@ public class ShortLongUrlController {
     public ResponseEntity<Object> saveLongUrl(@Valid @RequestBody LongUrlRequest longUrlRequest, HttpServletRequest request) {
 
         ShortUrlRequest requestDto = urlService.getShortUrl(longUrlRequest);
-
-        requestDto.setShortUrl("http://localhost:8080/" + requestDto.getShortUrl());
+        String shortDomain= urlService.getDomain(longUrlRequest.getFullUrl());
+        requestDto.setShortUrl( (shortDomain == null ? "http://localhost:8080/" : shortDomain) + requestDto.getShortUrl());
 
         logger.debug(String.format("ShortUrl for FullUrl %s is %s", longUrlRequest.getFullUrl(), requestDto.getShortUrl()));
 

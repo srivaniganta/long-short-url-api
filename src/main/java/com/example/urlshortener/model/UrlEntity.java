@@ -1,6 +1,5 @@
 package com.example.urlshortener.model;
 
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
