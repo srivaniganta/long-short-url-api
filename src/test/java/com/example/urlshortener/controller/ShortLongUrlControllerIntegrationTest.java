@@ -3,7 +3,7 @@ package com.example.urlshortener.controller;
 import com.example.urlshortener.dto.LongUrlRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.urlshortener.service.UrlService;
+import com.example.urlshortener.service.UrlServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class ShortLongUrlControllerIntegrationTest {
     private MockMvc mvc;
 
     @Autowired
-    private UrlService urlService;
+    private UrlServiceImpl urlServiceImpl;
 
 
     @Test

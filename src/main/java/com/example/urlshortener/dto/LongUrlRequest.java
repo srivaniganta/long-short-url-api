@@ -1,9 +1,11 @@
 package com.example.urlshortener.dto;
 
 
+import javax.validation.constraints.NotNull;
 
-//somehow lombok not detecting.so writting setter and getter
+//somehow lombok not detecting.so writing setter and getter
 public class LongUrlRequest {
+    @NotNull(message="Full URL Must need")
     private String fullUrl;
 
     public String getFullUrl() {
