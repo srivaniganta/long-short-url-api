@@ -3,7 +3,9 @@ package com.example.urlshortener.service;
 import com.example.urlshortener.common.Base62;
 import com.example.urlshortener.dto.LongUrlRequest;
 import com.example.urlshortener.dto.ShortUrlRequest;
+import com.example.urlshortener.model.DomainEntity;
 import com.example.urlshortener.model.UrlEntity;
+import com.example.urlshortener.repository.DomainRepository;
 import com.example.urlshortener.repository.ShortenerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UrlServiceImpl implements  URLService {
@@ -18,10 +21,13 @@ public class UrlServiceImpl implements  URLService {
     Logger logger = LoggerFactory.getLogger(UrlServiceImpl.class);
 
     private final ShortenerRepository shortenerRepository;
+    private final DomainRepository domainRepository;
 
     @Autowired
-    public UrlServiceImpl(ShortenerRepository shortenerRepository) {
+    public UrlServiceImpl(ShortenerRepository shortenerRepository,
+                          DomainRepository domainRepository) {
         this.shortenerRepository = shortenerRepository;
+        this.domainRepository = domainRepository;
     }
 
     private UrlEntity get(Long id) {
@@ -38,7 +44,8 @@ public class UrlServiceImpl implements  URLService {
      */
     public LongUrlRequest getFullUrl(String shortenString) {
         logger.debug("Converting Base 62 string %s to Base 10 id");
-        Long id = Base62.toBase10(shortenString);
+        String sanitizedShortValue = sanitizeShortURL(shortenString);
+        Long id = Base62.toBase10(sanitizedShortValue);
         logger.info(String.format("Converted Base 62 string %s to Base 10 id %s", shortenString, id));
 
         logger.info(String.format("Retrieving full url for %d", id));
@@ -92,4 +99,37 @@ public class UrlServiceImpl implements  URLService {
     private List<UrlEntity> checkFullUrlAlreadyExists(LongUrlRequest longUrlRequest) {
         return shortenerRepository.findUrlByFullUrl(longUrlRequest.getFullUrl());
     }
+
+    public String getDomain(String fullDomain){
+        String sanitizeDomain = sanitizeFullURL(fullDomain);
+
+       if(Optional.ofNullable(sanitizeDomain).isPresent())
+        {
+            Optional<DomainEntity> domainEntity = domainRepository.findByDomain(sanitizeDomain);
+            if(domainEntity.isPresent())
+                return domainEntity.get().getShortDomain();
+            else
+                return  null;
+        }
+
+       return null;
+    }
+
+    private String sanitizeFullURL(String url) {
+        if (url.substring(0, 7).equals("http://"))
+            url = url.substring(7);
+
+        if (url.substring(0, 8).equals("https://"))
+            url = url.substring(8);
+
+        if (url.charAt(url.length() - 1) == '/')
+            url = url.substring(0, url.length() - 1);
+
+        return url.substring(0,url.indexOf("/"));
+    }
+
+    private String sanitizeShortURL(String shortURL) {
+        return shortURL.substring(shortURL.lastIndexOf("/")+1);
+    }
+
 }

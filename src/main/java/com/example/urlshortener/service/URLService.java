@@ -8,4 +8,7 @@ public interface URLService {
     public LongUrlRequest getFullUrl(String shortenString);
     public ShortUrlRequest getShortUrl(LongUrlRequest longUrlRequest);
 
+    public String getDomain(String fullDomain);
+
+
 }
