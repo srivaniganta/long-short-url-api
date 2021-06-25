@@ -12,4 +12,7 @@ public interface ShortenerRepository extends JpaRepository<UrlEntity, Long> {
 
     @Query("SELECT u FROM url u WHERE u.fullUrl = ?1")
     List<UrlEntity> findUrlByFullUrl(String fullUrl);
+
+    @Query(nativeQuery = true, value = "SELECT nextval('seq_unique_id')")
+    Long getIdWithNextUniqueId() ;
 }
